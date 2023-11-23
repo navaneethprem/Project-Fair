@@ -7,8 +7,8 @@ function Footer() {
       <div style={{ width: "100%", height: "300px" }} className='d-flex flex-wrap justify-content-evenly align-items-center bg-primary'>
         <div style={{ width: "400px" }} className="company">
           <Link to={'/'} className='fs-4' style={{ textDecoration: "none", color: "white" }}>
-            <i className="fa-solid fa-upload me-2"></i>
-            Project File
+            <i className="fa-solid fa-diagram-project fa-beat-fade me-2"></i>
+            Project Fair
           </Link>
           <h6 className='text-light mt-3'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint iste, dolorem, commodi odit beatae similique ratione deleniti quas repellendus eaque vitae doloribus, nostrum tenetur. Modi fuga soluta blanditiis fugit amet!</h6>
         </div>

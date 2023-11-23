@@ -3,16 +3,34 @@ import { Col, Row } from 'reactstrap'
 import titleImg from '../Assets/title.png'
 import ProjectCard from '../Components/ProjectCard'
 import { Link } from 'react-router-dom'
+import { homeProjectAPI } from '../Services/allAPI'
 
 function Home() {
   const [loggedin,setLoggedin] = useState(false)
+  const [homeProjects,setHomeProjects] = useState([])
+  // api calling
+  const getHomeProjects = async ()=>{
+    const result = await homeProjectAPI()
+    if(result.status===200){
+      setHomeProjects(result.data)
+    }else{
+      console.log(result); 
+      console.log(result.response.data);
+    }
+  }
+  // console.log(homeProjects);
+
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
       setLoggedin(true)
     }else{
       setLoggedin(false)
     }
+    // api call
+    getHomeProjects()
   },[])
+  console.log(homeProjects);
+
   return (
     <>
       <div style={{width:"100%",height:"100vh"}} className='bg-primary container-fluid rounded'>
@@ -36,12 +54,16 @@ function Home() {
       <div className='all-projects mt-5'>
         <h1 className='text-center mb-5'>Explore Our Projects</h1>
         <marquee scrollAmount={25}>
-          <Row>
-            <Col sm={12} md={6} lg={4}>
-              <ProjectCard/>
-            </Col>
-          </Row>
+        <Row className='mt-5 container mb-4'>
+        {homeProjects?.length>0?homeProjects?.map(project=>(
+          <Col lg={4} md={6} sm={12}>
+          <ProjectCard project={project}/>
+        </Col>
+        )):<p style={{fontSize:"80px"}} className='fw-bolder text-danger text-center'>Nothing to display!!</p>
+          }
+      </Row>
         </marquee>
+        
         <div className='text-center mt-5 mb-3'><Link to={'/projects'}>view more projects</Link></div>
       </div>
     </>
