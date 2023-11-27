@@ -1,11 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import AddProject from './AddProject'
-import { userProjectAPI } from '../Services/allAPI'
-import { addProjectResponseContext } from '../Context/ContextShare'
+import { deleteProjectAPI, userProjectAPI } from '../Services/allAPI'
+import { addProjectResponseContext, editProjectResponseContext } from '../Context/ContextShare'
+import EditProject from './EditProject'
+import { toast } from 'react-toastify'
 
 
 function MyProjects() {
   const {addProjectResponse,setAddProjectResponse} = useContext(addProjectResponseContext)
+  const {editProjectResponse,setEditProjectResponse} = useContext(editProjectResponseContext)
   const [userProject,setUserProject] = useState([])
   const getUserProjects = async ()=>{
     if(sessionStorage.getItem("token")){
@@ -25,7 +28,20 @@ function MyProjects() {
 
   useEffect(()=>{
     getUserProjects()
-  },[addProjectResponse])
+  },[addProjectResponse,editProjectResponse])
+
+  const handleDelete = async (id)=>{
+    const token = sessionStorage.getItem("token")
+    const reqHeader = {
+      "Content-Type" : "application/json", "Authorization":`Bearer ${token}`
+    }
+    const result = await deleteProjectAPI(id,reqHeader)
+    if(result.status===200){
+      getUserProjects()
+    }else{
+      toast.error(result.response.data)
+    }
+  }
 
   return (
     <div className='border shadow rounded ms-5 me-3 mb-4'>
@@ -38,10 +54,10 @@ function MyProjects() {
         {userProject?.length>0?userProject.map(project=>(
           <div className='border d-flex align-items-center rounded p-2 m-3'>
           <h5>{project.title}</h5>
-          <div className='icon ms-auto'>
-              <button className='btn'><i className="fa-solid fa-pen-to-square fa-2x"></i></button>
+          <div className='d-flex icon ms-auto'>
+              <EditProject project={project} />
               <a href={`${project.github}`} target="_blank" className='btn'><i className="fa-brands fa-github fa-2x"></i></a>
-              <button className='btn'><i className="fa-solid fa-trash fa-2x"></i></button>
+              <button onClick={()=>handleDelete(project._id)} className='btn'><i className="fa-solid fa-trash fa-2x"></i></button>
           </div>
       </div>
         )):<p className='text-danger text-bold ms-4'>No Projects Uploaded yet!!!</p>

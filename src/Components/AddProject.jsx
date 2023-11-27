@@ -83,7 +83,6 @@ function AddProject() {
             <Button variant="success" onClick={handleShow}>
                 Add Project
             </Button>
-
             <Modal
                 show={show}
                 onHide={handleClose}
